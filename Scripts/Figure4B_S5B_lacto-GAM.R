@@ -134,6 +134,22 @@ el <- ggplot(df16S, aes(x = study.day.num, y = logConc_mg,
 print(el)
 # ggsave("plots/EdPCR_legend.pdf",  el , width = 8, height = 8)
 
+#### Statistics##
+dfs <- df16S %>%
+  mutate(
+    group = factor(groupe.x),
+    study.day = factor(study.day.x)
+  )
+
+LM_e <- lm(logConc_mg ~ group * study.day, data = dfs)
+par(mfrow = c(2, 2))
+plot(LM_e)
+
+emm_e <- emmeans(LM_e, ~ group | study.day, adjust = "sidak")
+contrast(emm_e, method = "tukey")
+plot(emm_e, comparisons = TRUE)
+####
+
 ############
 # ybbw
 ############
@@ -210,6 +226,21 @@ yl <- ggplot(dfyb, aes(x = study.day.num, y = logConc_mg,
   )
 print(yl)
 # ggsave("plots/EybbwdPCR_legend.pdf", yl, width = 8, height = 8)
+#### Statistics#### ####
+dfw <- dfyb %>%
+  mutate(
+    group = factor(groupe.x),
+    study.day = factor(study.day.x)
+  )
+
+LM_y <- lm(logConc_mg ~ group * study.day, data = dfw)
+par(mfrow = c(2, 2))
+plot(LM_y)
+
+emm_y <- emmeans(LM_y, ~ group | study.day, adjust = "sidak")
+contrast(emm_y, method = "tukey")
+plot(emm_y, comparisons = TRUE)
+###
 
 ############
 # 16L
@@ -284,6 +315,22 @@ LSl <- ggplot(df16L, aes(x = study.day.num, y = logConc_mg,
   )
 print(LSl)
 ggsave("plots/EdPCR_legend_Lreuteri.pdf",  LSl , width = 8, height = 8)
+
+##Statistics##
+df16LM <- df16L %>%
+  mutate(
+    group = factor(groupe.x),
+    study.day = factor(study.day.x)
+  )
+
+LM_REU <- lm(logConc_mg ~ group * study.day, data = df16LM)
+par(mfrow = c(2, 2))
+plot(LM_REU)
+
+emm_reu <- emmeans(LM_REU, ~ group | study.day, adjust = "sidak")
+contrast(emm_reu, method = "tukey")
+plot(emm_reu, comparisons = TRUE)
+
 
 ############
 # purB
@@ -360,6 +407,25 @@ amyL <- ggplot(dfpur, aes(x = study.day.num, y = logConc_mg,
   )
 print(amyL)
 ggsave("plots/EdPCR_legend_purB.pdf",  amyL , width = 8, height = 8)
+
+
+### Statistics##
+
+dfPURLM <- dfpur %>%
+  mutate(
+    group = factor(groupe.x),
+    study.day = factor(study.day.x)
+  )
+
+LM_amy <- lm(logConc_mg ~ group * study.day, data = dfPURLM)
+par(mfrow = c(2, 2))
+plot(LM_amy)
+
+emm_amy <- emmeans(LM_amy, ~ group | study.day, adjust = "sidak")
+contrast(emm_amy, method = "tukey")
+plot(emm_amy, comparisons = TRUE)
+
+##
 
 ### trend figure 
 
@@ -449,4 +515,5 @@ lacto <- ggplot(plot_data_trend_lacto,
 
 print(lacto)
 ggsave("plots/lacto_legend.pdf", lacto, width = 10, height = 8)
+
 
