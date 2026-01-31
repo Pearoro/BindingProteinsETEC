@@ -18,6 +18,7 @@ setdiff(B$Sample, A$Sample)
 
 C <- merge(A, B, by.x ="Sample", by.y = "Sample", all = FALSE)
 
+C %>% count(Sample) %>% filter(n > 4) 
 C %>% count(Sample) %>% filter(n > 5) 
 C %>% count(Sample) %>% filter(n < 4) 
 
@@ -132,23 +133,7 @@ el <- ggplot(df16S, aes(x = study.day.num, y = logConc_mg,
     plot.background  = element_blank()
   )
 print(el)
-# ggsave("plots/EdPCR_legend.pdf",  el , width = 8, height = 8)
-
-#### Statistics##
-dfs <- df16S %>%
-  mutate(
-    group = factor(groupe.x),
-    study.day = factor(study.day.x)
-  )
-
-LM_e <- lm(logConc_mg ~ group * study.day, data = dfs)
-par(mfrow = c(2, 2))
-plot(LM_e)
-
-emm_e <- emmeans(LM_e, ~ group | study.day, adjust = "sidak")
-contrast(emm_e, method = "tukey")
-plot(emm_e, comparisons = TRUE)
-####
+ggsave("plots/EdPCR_legend.pdf",  el , width = 8, height = 8)
 
 ############
 # ybbw
@@ -186,7 +171,7 @@ y <- ggplot(dfyb, aes(x = study.day.num, y = logConc_mg,
     plot.background  = element_blank()
   )
 print(y)
-# ggsave("plots/EybbwdPCR.pdf",  y, width = 8, height = 8)
+ggsave("plots/EybbwdPCR.pdf",  y, width = 8, height = 8)
 
 # ybbw with legend
 yl <- ggplot(dfyb, aes(x = study.day.num, y = logConc_mg,
@@ -225,22 +210,7 @@ yl <- ggplot(dfyb, aes(x = study.day.num, y = logConc_mg,
     plot.background  = element_blank()
   )
 print(yl)
-# ggsave("plots/EybbwdPCR_legend.pdf", yl, width = 8, height = 8)
-#### Statistics#### ####
-dfw <- dfyb %>%
-  mutate(
-    group = factor(groupe.x),
-    study.day = factor(study.day.x)
-  )
-
-LM_y <- lm(logConc_mg ~ group * study.day, data = dfw)
-par(mfrow = c(2, 2))
-plot(LM_y)
-
-emm_y <- emmeans(LM_y, ~ group | study.day, adjust = "sidak")
-contrast(emm_y, method = "tukey")
-plot(emm_y, comparisons = TRUE)
-###
+ggsave("plots/EybbwdPCR_legend.pdf", yl, width = 8, height = 8)
 
 ############
 # 16L
@@ -316,7 +286,8 @@ LSl <- ggplot(df16L, aes(x = study.day.num, y = logConc_mg,
 print(LSl)
 ggsave("plots/EdPCR_legend_Lreuteri.pdf",  LSl , width = 8, height = 8)
 
-##Statistics##
+
+# factors for modelling
 df16LM <- df16L %>%
   mutate(
     group = factor(groupe.x),
@@ -330,6 +301,7 @@ plot(LM_REU)
 emm_reu <- emmeans(LM_REU, ~ group | study.day, adjust = "sidak")
 contrast(emm_reu, method = "tukey")
 plot(emm_reu, comparisons = TRUE)
+
 
 
 ############
@@ -409,8 +381,8 @@ print(amyL)
 ggsave("plots/EdPCR_legend_purB.pdf",  amyL , width = 8, height = 8)
 
 
-### Statistics##
 
+# factors for modelling
 dfPURLM <- dfpur %>%
   mutate(
     group = factor(groupe.x),
@@ -424,8 +396,6 @@ plot(LM_amy)
 emm_amy <- emmeans(LM_amy, ~ group | study.day, adjust = "sidak")
 contrast(emm_amy, method = "tukey")
 plot(emm_amy, comparisons = TRUE)
-
-##
 
 ### trend figure 
 
@@ -515,5 +485,41 @@ lacto <- ggplot(plot_data_trend_lacto,
 
 print(lacto)
 ggsave("plots/lacto_legend.pdf", lacto, width = 10, height = 8)
+
+
+
+
+library(dplyr)
+
+summary_tbl <- plot_data %>%
+  group_by(Target, groupe.y, study.day.y) %>%
+  summarise(
+    n = sum(!is.na(logConc_mg)),
+    mean_log = mean(logConc_mg, na.rm = TRUE),
+    sd_log   = sd(logConc_mg, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+summary_tbl
+
+library(writexl)
+
+write_xlsx(summary_tbl, "summary_tbl.xlsx")
+
+library(dplyr)
+
+summary_tbltheo <- plot_data %>%
+  group_by(Target, groupe.y, study.day.y) %>%
+  summarise(
+    n = sum(!is.na(logtheo_mg)),
+    mean_log = mean(logtheo_mg, na.rm = TRUE),
+    sd_log   = sd(logtheo_mg, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+summary_tbltheo
+
+write_xlsx(summary_tbltheo, "summary_tblteho.xlsx")
+
 
 
