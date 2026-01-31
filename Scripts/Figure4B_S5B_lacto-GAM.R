@@ -135,6 +135,8 @@ el <- ggplot(df16S, aes(x = study.day.num, y = logConc_mg,
 print(el)
 ggsave("plots/EdPCR_legend.pdf",  el , width = 8, height = 8)
 
+
+##Statistics##
 dfs <- df16S %>%
   mutate(
     group = factor(groupe.x),
@@ -226,8 +228,7 @@ yl <- ggplot(dfyb, aes(x = study.day.num, y = logConc_mg,
 print(yl)
 ggsave("plots/EybbwdPCR_legend.pdf", yl, width = 8, height = 8)
 
-
-
+##Statistics##
 dfw <- dfyb %>%
   mutate(
     group = factor(groupe.x),
@@ -316,7 +317,7 @@ LSl <- ggplot(df16L, aes(x = study.day.num, y = logConc_mg,
 print(LSl)
 ggsave("plots/EdPCR_legend_Lreuteri.pdf",  LSl , width = 8, height = 8)
 
-
+##Statistics##
 # factors for modelling
 df16LM <- df16L %>%
   mutate(
@@ -412,7 +413,7 @@ ggsave("plots/EdPCR_legend_purB.pdf",  amyL , width = 8, height = 8)
 
 
 
-# factors for modelling
+##Statistics##
 dfPURLM <- dfpur %>%
   mutate(
     group = factor(groupe.x),
@@ -550,6 +551,7 @@ summary_tbltheo <- plot_data %>%
 summary_tbltheo
 
 write_xlsx(summary_tbltheo, "summary_tblteho.xlsx")
+
 
 
 
