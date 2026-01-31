@@ -135,6 +135,20 @@ el <- ggplot(df16S, aes(x = study.day.num, y = logConc_mg,
 print(el)
 ggsave("plots/EdPCR_legend.pdf",  el , width = 8, height = 8)
 
+dfs <- df16S %>%
+  mutate(
+    group = factor(groupe.x),
+    study.day = factor(study.day.x)
+  )
+
+LM_e <- lm(logConc_mg ~ group * study.day, data = dfs)
+par(mfrow = c(2, 2))
+plot(LM_e)
+
+emm_e <- emmeans(LM_e, ~ group | study.day, adjust = "sidak")
+contrast(emm_e, method = "tukey")
+plot(emm_e, comparisons = TRUE)
+
 ############
 # ybbw
 ############
@@ -211,6 +225,22 @@ yl <- ggplot(dfyb, aes(x = study.day.num, y = logConc_mg,
   )
 print(yl)
 ggsave("plots/EybbwdPCR_legend.pdf", yl, width = 8, height = 8)
+
+
+
+dfw <- dfyb %>%
+  mutate(
+    group = factor(groupe.x),
+    study.day = factor(study.day.x)
+  )
+
+LM_y <- lm(logConc_mg ~ group * study.day, data = dfw)
+par(mfrow = c(2, 2))
+plot(LM_y)
+
+emm_y <- emmeans(LM_y, ~ group | study.day, adjust = "sidak")
+contrast(emm_y, method = "tukey")
+plot(emm_y, comparisons = TRUE)
 
 ############
 # 16L
